@@ -49,6 +49,46 @@ function run(l) {
 	}
 }
 
+// load a .gotojs file and assign it to program
+function load(f) {
+	console.log('loading program...');
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", f, false);
+	xhr.send(null);
+	program = {};
+	if (xhr.status === 200) {
+		if (debug)
+			console.log(xhr.responseText);
+			
+		var programlines = xhr.responseText.split("\n");
+		
+		// TODO: fix up the auto-line mechanism to work better when users occasionally define lines. Would probably be best to save the last line number and then increment from that point, allowing for more casual line declarations. 
+		
+		// line label extractor:
+		var r = /[0-9]*:/;
+		for (var i = 0; i < programlines.length; i++) {
+			var autoline = (1 + i) * 10;
+			if(program[autoline]){
+				// offset by one if you've manually defined it previously
+				autoline++;
+			}
+			
+			var l = programlines[i];
+			
+			// custom line labels:
+			var labels = r.exec(l);
+			if(labels && l.replace(' ', '').indexOf(labels[0]) === 0){
+				autoline = parseInt(labels[0], 10);
+				l = l.substring(labels[0].length);
+			}
+			program[autoline] = l;
+		}
+	}else{
+		if (debug)
+			console.log('Error loading.');
+	}
+}
+
 // dumping things to the DOM; couldn't bring myself to use document.write()
 function print(s) {
 	var o = document.createElement("p");

@@ -1,8 +1,10 @@
-gotojs
-======
+gotojs (with .gotojs parser)
+=========================
 
 A delightfully evil abomination of eval() with goto(); all in global space
 by Dave Balmer.
+
+This fork includes a mini file parser for .gotojs files. An example file is included.
 
 Use
 ---
@@ -19,10 +21,25 @@ program = {
 run();
 ```
 
+Use With File
+-------------
+
+In this fork, you can also load a file
+
+As a bonus, the line numbering is completely optional in the gotojs files. By default, line numbers auto-increment by 10. If you do include line-numbering, you're better off adding it for all lines.
+
+```language-javascript
+load("example.gotojs");
+run();
+```
+
+It's worth noting that loading files uses synchronous HTTP requests, which is generally not recommended.
+
 Commands
 --------
 
 - `run(line)` start execution of the `program` at the beginning or `line`.
+- `load(file)` load a gotojs file and assign it to `program`.
 - `goto(line)` move execution to the `line` specified.
 - `print(string)` prints the string to the `document.body`.
 - `tron()` turns the tracer on.
