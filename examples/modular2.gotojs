@@ -1,0 +1,7 @@
+print("Module 2 loading...")
+progress = 0
+990: print(progress + "% ...");
+991: progress += 10
+992: if(progress <= 100) goto(990)
+993: print("Module Loaded!")
+994: end()

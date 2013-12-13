@@ -1,0 +1,6 @@
+// load the two external modules
+mod2 = load("modular2.gotojs")
+mod3 = load("modular3.gotojs")
+
+// now start module 3
+run(mod3)

@@ -65,7 +65,7 @@ function load(f) {
 		
 		// append to program instead of overwriting:
 		var lastline = 0;
-		if (program) {
+		if (Object.keys(program).length !== 0) {
 			linenumber = [];
 			for (var k in program)
 				linenumber.push(k * 1);
@@ -123,6 +123,7 @@ function print(s) {
 }
 
 debug = 0;
+program = {};
 
 // turn debugging on
 function tron() {

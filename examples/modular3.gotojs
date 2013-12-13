@@ -1,0 +1,9 @@
+print("Module 3 loading...")
+
+// do something here
+
+print("Module 3 loaded!")
+
+
+// run the second module, loaded from the first module
+run(mod2)
