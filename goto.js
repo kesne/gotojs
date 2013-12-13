@@ -34,7 +34,6 @@ function run(l) {
 		goto(l);
 	else
 		line = 0;
-
 	// execution engine, powered by globals and eval()
 	for (; line < linenumber.length; line++) {
 		if (debug)
@@ -55,7 +54,7 @@ function load(f) {
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", f, false);
 	xhr.send(null);
-	program = {};
+	program = program || {};
 	if (xhr.status === 200) {
 		if (debug)
 			console.log(xhr.responseText);
@@ -64,28 +63,55 @@ function load(f) {
 		
 		// TODO: fix up the auto-line mechanism to work better when users occasionally define lines. Would probably be best to save the last line number and then increment from that point, allowing for more casual line declarations. 
 		
+		// append to program instead of overwriting:
+		var lastline = 0;
+		if (program) {
+			linenumber = [];
+			for (var k in program)
+				linenumber.push(k * 1);
+				
+			linenumber = linenumber.sort(function(a, b) {
+				if (a > b)
+					return 1;
+				else if (a < b)
+					return -1;
+				else
+					return 0;
+			});
+			
+			lastline = linenumber[linenumber.length - 1];
+		}
+			
+		var startline = 0;
+		
 		// line label extractor:
 		var r = /[0-9]*:/;
 		for (var i = 0; i < programlines.length; i++) {
-			var autoline = (1 + i) * 10;
-			if(program[autoline]){
+			var autoline = ((1 + i) * 10) + lastline;
+			if (program[autoline]) {
 				// offset by one if you've manually defined it previously
 				autoline++;
 			}
+			
+			// set the starting line which is what we return from this function:
+			if (i === 0)
+				startline = autoline; 
 			
 			var l = programlines[i];
 			
 			// custom line labels:
 			var labels = r.exec(l);
-			if(labels && l.replace(' ', '').indexOf(labels[0]) === 0){
+			if (labels && l.replace(' ', '').indexOf(labels[0]) === 0) {
 				autoline = parseInt(labels[0], 10);
 				l = l.substring(labels[0].length);
 			}
 			program[autoline] = l;
 		}
+		return startline;
 	}else{
 		if (debug)
 			console.log('Error loading.');
+		return -1;
 	}
 }
 
